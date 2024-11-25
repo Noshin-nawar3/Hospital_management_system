@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.text.Font?>
+
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="550.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="hospital_management.PatientPageController">
+   <children>
+      <AnchorPane fx:id="main_form" prefHeight="500.0" prefWidth="500.0">
+         <children>
+            <AnchorPane fx:id="login_form" prefHeight="550.0" prefWidth="500.0" styleClass="white-bg" stylesheets="@../design/PageDesign.css">
+               <children>
+                  <Label layoutX="149.0" layoutY="74.0" text="Login Account" textFill="#861818">
+                     <font>
+                        <Font name="Tahoma" size="24.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="188.0" layoutY="124.0" text="Patient Portal">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="login_patientID" layoutX="74.0" layoutY="175.0" onAction="#loginAccount" prefHeight="40.0" prefWidth="300.0" promptText="Patient ID" stylesheets="@../design/PageDesign.css">
+                     <styleClass>
+                        <String fx:value="textfield-3" />
+                        <String fx:value="white-bg" />
+                     </styleClass>
+                  </TextField>
+                  <TextField fx:id="login_showPassword" layoutX="74.0" layoutY="233.0" onAction="#loginAccount" prefHeight="40.0" prefWidth="300.0" promptText="Password" stylesheets="@../design/PageDesign.css">
+                     <styleClass>
+                        <String fx:value="white-bg" />
+                        <String fx:value="textfield-1" />
+                     </styleClass>
+                  </TextField>
+                  <PasswordField fx:id="login_password" layoutX="74.0" layoutY="233.0" onAction="#loginAccount" prefHeight="40.0" prefWidth="300.0" promptText="Password" stylesheets="@../design/PageDesign.css">
+                     <styleClass>
+                        <String fx:value="textfield-3" />
+                        <String fx:value="white-bg" />
+                     </styleClass>
+                  </PasswordField>
+                  <CheckBox fx:id="login_checkBox" layoutX="75.0" layoutY="286.0" mnemonicParsing="false" onAction="#loginShowPassword" text="Show Password">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </CheckBox>
+                  <Button fx:id="login_loginBtn" layoutX="74.0" layoutY="352.0" mnemonicParsing="false" onAction="#loginAccount" prefHeight="40.0" prefWidth="300.0" stylesheets="@../design/PageDesign.css" text="Login">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                     <styleClass>
+                        <String fx:value="btn-3" />
+                        <String fx:value="radius" />
+                     </styleClass>
+                  </Button>
+                  <ComboBox fx:id="login_user" layoutX="148.0" layoutY="422.0" onAction="#switchPage" prefWidth="150.0" promptText="Select User" stylesheets="@../design/PageDesign.css">
+                     <styleClass>
+                        <String fx:value="textfield-2" />
+                        <String fx:value="white-bg" />
+                     </styleClass>
+                  </ComboBox>
+               </children>
+            </AnchorPane>
+         </children>
+      </AnchorPane>
+   </children>
+</StackPane>
