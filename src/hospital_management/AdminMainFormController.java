@@ -11,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -612,7 +613,7 @@ public class AdminMainFormController implements Initializable {
                                 Data.temp_doctorStatus = pData.getStatus();
                                 Data.temp_doctorImagePath = pData.getImage();
 
-                                // NOW LETS CREATE FXML FOR EDIT PATIENT FORM
+                                
                                 Parent root = FXMLLoader.load(getClass().getResource("EditDoctorForm.fxml"));
                                 Stage stage = new Stage();
 
@@ -775,7 +776,7 @@ public class AdminMainFormController implements Initializable {
                                 Data.temp_number = pData.getMobileNumber();
                                 Data.temp_status = pData.getStatus();
 
-                                // NOW LETS CREATE FXML FOR EDIT PATIENT FORM
+                                
                                 Parent root = FXMLLoader.load(getClass().getResource("EditPatientForm.fxml"));
                                 Stage stage = new Stage();
 
@@ -886,71 +887,147 @@ public class AdminMainFormController implements Initializable {
 
     }
 
-    public void appointmentActionButton() {
+//    public void appointmentActionButton() {
+//
+//        connect = Database.connectDB();
+//        appointmentListData = appointmentGetData();
+//
+//        Callback<TableColumn<AppointmentData, String>, TableCell<AppointmentData, String>> cellFactory = (TableColumn<AppointmentData, String> param) -> {
+//            final TableCell<AppointmentData, String> cell = new TableCell<AppointmentData, String>() {
+//                public void updateItem(String item, boolean empty) {
+//                    super.updateItem(item, empty);
+//
+//                    if (empty) {
+//                        setGraphic(null);
+//                        setText(null);
+//                    } else {
+//                        Button editButton = new Button("Edit");
+//                        Button removeButton = new Button("Delete");
+//
+//                        editButton.setStyle("-fx-background-color: linear-gradient(to bottom right, #188ba7, #306090);\n"
+//                                + "    -fx-cursor: hand;\n"
+//                                + "    -fx-text-fill: #fff;\n"
+//                                + "    -fx-font-size: 14px;\n"
+//                                + "    -fx-font-family: Arial;");
+//
+//                        removeButton.setStyle("-fx-background-color: linear-gradient(to bottom right, #188ba7, #306090);\n"
+//                                + "    -fx-cursor: hand;\n"
+//                                + "    -fx-text-fill: #fff;\n"
+//                                + "    -fx-font-size: 14px;\n"
+//                                + "    -fx-font-family: Arial;");
+//
+//                        editButton.setOnAction((ActionEvent event) -> {
+//                            try {
+//
+//                                AppointmentData aData = appointments_tableView.getSelectionModel().getSelectedItem();
+//                                int num = appointments_tableView.getSelectionModel().getSelectedIndex();
+//
+//                                if ((num - 1) < -1) {
+//                                    alert.errorMessage("Please select item first");
+//                                    return;
+//                                }
+//
+//                                Data.temp_appID = String.valueOf(aData.getAppointmentID());
+//                                Data.temp_appName = aData.getName();
+//                                Data.temp_appGender = aData.getGender();
+//                                Data.temp_appAddress = aData.getAddress();
+//                                Data.temp_appDescription = aData.getDescription();
+//                                Data.temp_appDiagnosis = aData.getDiagnosis();
+//                                Data.temp_appTreatment = aData.getTreatment();
+//                                Data.temp_appMobileNumber = String.valueOf(aData.getMobileNumber());
+//                                Data.temp_appDoctor = aData.getDoctorID();
+//                                Data.temp_appSpecialized = aData.getSpecialized();
+//                                Data.temp_appStatus = aData.getStatus();
+//
+//                                // NOW LETS CREATE FXML FOR EDIT APPOINTMENT FORM
+//                                Parent root = FXMLLoader.load(getClass().getResource("EditAppointmentForm.fxml"));
+//                                Stage stage = new Stage();
+//
+//                                stage.setScene(new Scene(root));
+//                                stage.show();
+//
+//                            } catch (Exception e) {
+//                                e.printStackTrace();
+//                            }
+//                        });
+//
+//                        removeButton.setOnAction((ActionEvent event) -> {
+//                            AppointmentData aData = appointments_tableView.getSelectionModel().getSelectedItem();
+//                            int num = appointments_tableView.getSelectionModel().getSelectedIndex();
+//
+//                            if ((num - 1) < -1) {
+//                                alert.errorMessage("Please select item first");
+//                                return;
+//                            }
+//
+//                            String deleteData = "UPDATE appointment SET date_delete = ? WHERE appointment_id = '"
+//                                    + aData.getAppointmentID() + "'";
+//
+//                            try {
+//                                if (alert.confirmationMessage("Are you sure you want to delete Appointment ID: " + aData.getAppointmentID() + "?")) {
+//                                    prepare = connect.prepareStatement(deleteData);
+//                                    Date date = new Date();
+//                                    java.sql.Date sqlDate = new java.sql.Date(date.getTime());
+//
+//                                    prepare.setString(1, String.valueOf(sqlDate));
+//                                    prepare.executeUpdate();
+//
+//                                    doctorGetData();
+//                                    alert.successMessage("Deleted Successfully!");
+//
+//                                }
+//                            } catch (Exception e) {
+//                                e.printStackTrace();
+//                            }
+//                        });
+//
+//                        HBox manageBtn = new HBox(editButton, removeButton);
+//                        manageBtn.setAlignment(Pos.CENTER);
+//                        manageBtn.setSpacing(5);
+//                        setGraphic(manageBtn);
+//                        setText(null);
+//                    }
+//                }
+//            };
+//            doctorDisplayData();
+//            return cell;
+//        };
+//
+//        appointments_col_action.setCellFactory(cellFactory);
+//        appointments_tableView.setItems(appointmentListData);
+//
+//    }
 
-        connect = Database.connectDB();
-        appointmentListData = appointmentGetData();
+ public void appointmentActionButton() {
+    connect = Database.connectDB();
+    appointmentListData = appointmentGetData();
 
-        Callback<TableColumn<AppointmentData, String>, TableCell<AppointmentData, String>> cellFactory = (TableColumn<AppointmentData, String> param) -> {
-            final TableCell<AppointmentData, String> cell = new TableCell<AppointmentData, String>() {
-                public void updateItem(String item, boolean empty) {
-                    super.updateItem(item, empty);
+    Callback<TableColumn<AppointmentData, String>, TableCell<AppointmentData, String>> cellFactory = (TableColumn<AppointmentData, String> param) -> {
+        final TableCell<AppointmentData, String> cell = new TableCell<AppointmentData, String>() {
+            public void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
 
-                    if (empty) {
-                        setGraphic(null);
-                        setText(null);
-                    } else {
-                        Button editButton = new Button("Edit");
-                        Button removeButton = new Button("Delete");
+                if (empty) {
+                    setGraphic(null);
+                    setText(null);
+                } else {
+                    Button editButton = new Button("Edit");
+                    Button removeButton = new Button("Delete");
 
-                        editButton.setStyle("-fx-background-color: linear-gradient(to bottom right, #188ba7, #306090);\n"
-                                + "    -fx-cursor: hand;\n"
-                                + "    -fx-text-fill: #fff;\n"
-                                + "    -fx-font-size: 14px;\n"
-                                + "    -fx-font-family: Arial;");
+                    editButton.setStyle("-fx-background-color: linear-gradient(to bottom right, #188ba7, #306090);\n"
+                            + "    -fx-cursor: hand;\n"
+                            + "    -fx-text-fill: #fff;\n"
+                            + "    -fx-font-size: 14px;\n"
+                            + "    -fx-font-family: Arial;");
 
-                        removeButton.setStyle("-fx-background-color: linear-gradient(to bottom right, #188ba7, #306090);\n"
-                                + "    -fx-cursor: hand;\n"
-                                + "    -fx-text-fill: #fff;\n"
-                                + "    -fx-font-size: 14px;\n"
-                                + "    -fx-font-family: Arial;");
+                    removeButton.setStyle("-fx-background-color: linear-gradient(to bottom right, #188ba7, #306090);\n"
+                            + "    -fx-cursor: hand;\n"
+                            + "    -fx-text-fill: #fff;\n"
+                            + "    -fx-font-size: 14px;\n"
+                            + "    -fx-font-family: Arial;");
 
-                        editButton.setOnAction((ActionEvent event) -> {
-                            try {
-
-                                AppointmentData aData = appointments_tableView.getSelectionModel().getSelectedItem();
-                                int num = appointments_tableView.getSelectionModel().getSelectedIndex();
-
-                                if ((num - 1) < -1) {
-                                    alert.errorMessage("Please select item first");
-                                    return;
-                                }
-
-                                Data.temp_appID = String.valueOf(aData.getAppointmentID());
-                                Data.temp_appName = aData.getName();
-                                Data.temp_appGender = aData.getGender();
-                                Data.temp_appAddress = aData.getAddress();
-                                Data.temp_appDescription = aData.getDescription();
-                                Data.temp_appDiagnosis = aData.getDiagnosis();
-                                Data.temp_appTreatment = aData.getTreatment();
-                                Data.temp_appMobileNumber = String.valueOf(aData.getMobileNumber());
-                                Data.temp_appDoctor = aData.getDoctorID();
-                                Data.temp_appSpecialized = aData.getSpecialized();
-                                Data.temp_appStatus = aData.getStatus();
-
-                                // NOW LETS CREATE FXML FOR EDIT APPOINTMENT FORM
-                                Parent root = FXMLLoader.load(getClass().getResource("EditAppointmentForm.fxml"));
-                                Stage stage = new Stage();
-
-                                stage.setScene(new Scene(root));
-                                stage.show();
-
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        });
-
-                        removeButton.setOnAction((ActionEvent event) -> {
+                    editButton.setOnAction((ActionEvent event) -> {
+                        try {
                             AppointmentData aData = appointments_tableView.getSelectionModel().getSelectedItem();
                             int num = appointments_tableView.getSelectionModel().getSelectedIndex();
 
@@ -959,44 +1036,87 @@ public class AdminMainFormController implements Initializable {
                                 return;
                             }
 
-                            String deleteData = "UPDATE appointment SET date_delete = ? WHERE appointment_id = '"
-                                    + aData.getAppointmentID() + "'";
+                            Data.temp_appID = String.valueOf(aData.getAppointmentID());
+                            Data.temp_appName = aData.getName();
+                            Data.temp_appGender = aData.getGender();
+                            Data.temp_appAddress = aData.getAddress();
+                            Data.temp_appDescription = aData.getDescription();
+                            Data.temp_appDiagnosis = aData.getDiagnosis();
+                            Data.temp_appTreatment = aData.getTreatment();
+                            Data.temp_appMobileNumber = String.valueOf(aData.getMobileNumber());
+                            Data.temp_appDoctor = aData.getDoctorID();
+                            Data.temp_appSpecialized = aData.getSpecialized();
+                            Data.temp_appStatus = aData.getStatus();
 
-                            try {
-                                if (alert.confirmationMessage("Are you sure you want to delete Appointment ID: " + aData.getAppointmentID() + "?")) {
-                                    prepare = connect.prepareStatement(deleteData);
-                                    Date date = new Date();
-                                    java.sql.Date sqlDate = new java.sql.Date(date.getTime());
+                        
+                            Parent root = FXMLLoader.load(getClass().getResource("EditAppointmentForm.fxml"));
+                            Stage stage = new Stage();
 
-                                    prepare.setString(1, String.valueOf(sqlDate));
-                                    prepare.executeUpdate();
+                            stage.setScene(new Scene(root));
+                            stage.show();
 
-                                    doctorGetData();
-                                    alert.successMessage("Deleted Successfully!");
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    });
 
-                                }
-                            } catch (Exception e) {
-                                e.printStackTrace();
+                    removeButton.setOnAction((ActionEvent event) -> {
+                        AppointmentData aData = appointments_tableView.getSelectionModel().getSelectedItem();
+                        int num = appointments_tableView.getSelectionModel().getSelectedIndex();
+
+                        if ((num - 1) < -1) {
+                            alert.errorMessage("Please select item first");
+                            return;
+                        }
+
+                        try {
+                            if (alert.confirmationMessage("Are you sure you want to delete Appointment ID: " + aData.getAppointmentID() + "?")) {
+                               
+                                String procedureCall = "{CALL delete_appointment(?, ?)}";
+                                CallableStatement callable = connect.prepareCall(procedureCall);
+
+                              
+                                callable.setString(1, String.valueOf(aData.getAppointmentID())); // p_appointment_id
+                                Date date = new Date();
+                                java.sql.Date sqlDate = new java.sql.Date(date.getTime());
+                                callable.setDate(2, sqlDate); 
+
+                                
+                                callable.execute();
+
+                             
+                                appointmentDisplayData(); 
+                                alert.successMessage("Deleted Successfully!");
+
+                               
+                                callable.close();
                             }
-                        });
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            alert.errorMessage("An error occurred while deleting the appointment: " + e.getMessage());
+                        }
+                    });
 
-                        HBox manageBtn = new HBox(editButton, removeButton);
-                        manageBtn.setAlignment(Pos.CENTER);
-                        manageBtn.setSpacing(5);
-                        setGraphic(manageBtn);
-                        setText(null);
-                    }
+                    HBox manageBtn = new HBox(editButton, removeButton);
+                    manageBtn.setAlignment(Pos.CENTER);
+                    manageBtn.setSpacing(5);
+                    setGraphic(manageBtn);
+                    setText(null);
                 }
-            };
-            doctorDisplayData();
-            return cell;
+            }
         };
+        appointmentDisplayData();
+        return cell;
+    };
 
-        appointments_col_action.setCellFactory(cellFactory);
-        appointments_tableView.setItems(appointmentListData);
-
-    }
-
+    appointments_col_action.setCellFactory(cellFactory);
+    appointments_tableView.setItems(appointmentListData);
+}   
+    
+    
+    
+    
+    
     public ObservableList<PatientsData> paymentGetData() {
 
         ObservableList<PatientsData> listData = FXCollections.observableArrayList();
@@ -1297,6 +1417,7 @@ public class AdminMainFormController implements Initializable {
             doctors_form.setVisible(false);
             patients_form.setVisible(false);
             appointments_form.setVisible(false);
+            payment_form.setVisible(false);
             profile_form.setVisible(true);
 
             profileStatusList();
