@@ -7,6 +7,7 @@ package hospital_management;
 
 import java.net.URL;
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -90,11 +91,11 @@ public class DoctorPageController implements Initializable {
     @FXML
     private Button register_signupbtn;
     
-     private Connection connect;
+    private Connection connect = DriverManager.getConnection("jdbc:mysql://3306/hospital", "root", "");
     private PreparedStatement prepare;
     private ResultSet result;
     
-     private final AlertMessage alert = new AlertMessage();
+    private final AlertMessage alert = new AlertMessage();
 
     @FXML
     void loginAccount() {
@@ -104,7 +105,6 @@ public class DoctorPageController implements Initializable {
         } else {
 
             String sql = "SELECT * FROM doctor WHERE doctor_id = ? AND password = ? AND delete_date IS NULL";
-            connect = Database.connectDB();
             
              try {
                  
@@ -136,7 +136,21 @@ public class DoctorPageController implements Initializable {
                     result = prepare.executeQuery();
 
                     if (result.next()) {
+                        Data.doctor_id = result.getString("doctor_id");
+                        Data.doctor_name = result.getString("full_name");
+                        
                         alert.successMessage("Login Successfully!");
+                        
+                        Parent root = FXMLLoader.load(getClass().getResource("DoctorMainForm.fxml"));
+                        
+                        Stage stage = new Stage();
+                        
+                        stage.setTitle("Hospital Management System | Doctor Main Form");
+                        stage.setScene(new Scene(root));
+                        stage.show();
+                        
+                        login_loginBtn.getScene().getWindow().hide();
+                        
                     }else{
                         alert.errorMessage("Incorrect Doctor ID/Password");
                     }
@@ -179,7 +193,6 @@ public class DoctorPageController implements Initializable {
             String checkDoctorID = "SELECT * FROM doctor WHERE doctor_id = '"
                     + register_doctorID.getText() + "'";
             
-            connect = Database.connectDB();
             
             try {
                 
@@ -251,8 +264,6 @@ public class DoctorPageController implements Initializable {
         String doctorID = "DID-";
         int tempID = 0;
         String sql = "SELECT MAX(id) FROM doctor";
-
-        connect = Database.connectDB();
 
         try {
 
