@@ -731,6 +731,70 @@ public class DoctorMainFormController implements Initializable {
 
     }
     
+
+    //      public void appointmentUpdateBtn() {
+//    // Validate all required fields, including diagnosis and treatment
+//    if (appointment_appointmentID.getText().isEmpty()
+//            || appointment_name.getText().isEmpty()
+//            || appointment_gender.getSelectionModel().getSelectedItem() == null
+//            || appointment_mobileNumber.getText().isEmpty()
+//            || appointment_description.getText().isEmpty()
+//            || appointment_address.getText().isEmpty()
+//            || appointment_status.getSelectionModel().getSelectedItem() == null
+//            || appointment_schedule.getValue() == null
+//            || appointment_diagnosis.getText().isEmpty()
+//            || appointment_treatment.getText().isEmpty()) {
+//        alert.errorMessage("Please fill all the required fields, including diagnosis and treatment");
+//    } else {
+//        // Get current date for date_modify
+//        java.sql.Date sqlDate = new java.sql.Date(new Date().getTime());
+//
+//        // Use parameterized query to update appointment data
+//        String updateData = "UPDATE appointment SET name = ?, gender = ?, mobile_number = ?, "
+//                + "description = ?, address = ?, status = ?, schedule = ?, date_modify = ?, "
+//                + "treatment = ?, diagnosis = ? WHERE appointment_id = ?";
+//
+//        connect = Database.connectDB();
+//
+//        try {
+//            if (alert.confirmationMessage("Are you sure you want to UPDATE Appointment ID: "
+//                    + appointment_appointmentID.getText() + "?")) {
+//                prepare = connect.prepareStatement(updateData);
+//                prepare.setString(1, appointment_name.getText());
+//                prepare.setString(2, appointment_gender.getSelectionModel().getSelectedItem());
+//                prepare.setString(3, appointment_mobileNumber.getText());
+//                prepare.setString(4, appointment_description.getText());
+//                prepare.setString(5, appointment_address.getText());
+//                prepare.setString(6, appointment_status.getSelectionModel().getSelectedItem());
+//                prepare.setDate(7, java.sql.Date.valueOf(appointment_schedule.getValue()));
+//                prepare.setDate(8, sqlDate);
+//                prepare.setString(9, appointment_treatment.getText());
+//                prepare.setString(10, appointment_diagnosis.getText());
+//                prepare.setString(11, appointment_appointmentID.getText());
+//
+//                prepare.executeUpdate();
+//
+//                // Refresh UI and show success message
+//                appointmentShowData();
+//                appointmentAppointmentID();
+//                appointmentClearBtn();
+//                alert.successMessage("Successfully Updated!");
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            alert.errorMessage("An error occurred while updating the appointment. Please try again.");
+//        } finally {
+//            // Close resources
+//            try {
+//                if (prepare != null) prepare.close();
+//                if (connect != null) connect.close();
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
+//}
+
          public void appointmentUpdateBtn() {
     
     if (appointment_appointmentID.getText().isEmpty()
