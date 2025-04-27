@@ -11,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -730,55 +731,66 @@ public class DoctorMainFormController implements Initializable {
 
     }
     
-      public void appointmentUpdateBtn() {
-          
-        if (appointment_appointmentID.getText().isEmpty()
-                || appointment_name.getText().isEmpty()
-                || appointment_gender.getSelectionModel().getSelectedItem() == null
-                || appointment_mobileNumber.getText().isEmpty()
-                || appointment_description.getText().isEmpty()
-                || appointment_address.getText().isEmpty()
-                || appointment_status.getSelectionModel().getSelectedItem() == null
-                || appointment_schedule.getValue() == null) {
-            alert.errorMessage("Please fill the blank fields");
-        } else {
-            
-            java.sql.Date sqlDate = new java.sql.Date(new Date().getTime());
-            
-            String updateData = "UPDATE appointment SET name = '"
-                    + appointment_name.getText() + "', gender = '"
-                    + appointment_gender.getSelectionModel().getSelectedItem() + "', mobile_number = '"
-                    + appointment_mobileNumber.getText() + "', description = '"
-                    + appointment_description.getText() + "', address = '"
-                    + appointment_address.getText() + "', status = '"
-                    + appointment_status.getSelectionModel().getSelectedItem() + "', schedule = '"
-                    + appointment_schedule.getValue() + "', date_modify = '"
-                    + sqlDate + "' WHERE appointment_id = '"
-                    + appointment_appointmentID.getText() + "'";
-            
-            connect = Database.connectDB();
+         public void appointmentUpdateBtn() {
+    
+    if (appointment_appointmentID.getText().isEmpty()
+            || appointment_name.getText().isEmpty()
+            || appointment_gender.getSelectionModel().getSelectedItem() == null
+            || appointment_mobileNumber.getText().isEmpty()
+            || appointment_description.getText().isEmpty()
+            || appointment_address.getText().isEmpty()
+            || appointment_status.getSelectionModel().getSelectedItem() == null
+            || appointment_schedule.getValue() == null
+            || appointment_diagnosis.getText().isEmpty()
+            || appointment_treatment.getText().isEmpty()) {
+        alert.errorMessage("Please fill all the required fields, including diagnosis and treatment");
+    } else {
+        connect = Database.connectDB();
+
+        CallableStatement callable = null;
+        try {
+            if (alert.confirmationMessage("Are you sure you want to UPDATE Appointment ID: "
+                    + appointment_appointmentID.getText() + "?")) {
+               
+                String procedureCall = "{CALL update_appointment(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}";
+                callable = connect.prepareCall(procedureCall);
+
+                
+                callable.setString(1, appointment_appointmentID.getText()); 
+                callable.setString(2, appointment_name.getText());
+                callable.setString(3, appointment_gender.getSelectionModel().getSelectedItem());
+                callable.setString(4, appointment_mobileNumber.getText());
+                callable.setString(5, appointment_description.getText());
+                callable.setString(6, appointment_address.getText());
+                callable.setString(7, appointment_status.getSelectionModel().getSelectedItem());
+                callable.setDate(8, java.sql.Date.valueOf(appointment_schedule.getValue())); 
+                callable.setString(9, appointment_treatment.getText());
+                callable.setString(10, appointment_diagnosis.getText());
+
+                
+                callable.execute();
+
+                
+                appointmentShowData();
+                appointmentAppointmentID();
+                appointmentClearBtn();
+                alert.successMessage("Successfully Updated!");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            alert.errorMessage("An error occurred while updating the appointment: " + e.getMessage());
+        } finally {
             
             try {
-                
-                if (alert.confirmationMessage("Are you sure you want to UPDATE Appointment ID: "
-                        + appointment_appointmentID.getText() + "?")) {
-                    prepare = connect.prepareStatement(updateData);
-                    prepare.executeUpdate();
-
-                    appointmentShowData();
-                    appointmentAppointmentID();
-                    appointmentClearBtn();
-                    alert.successMessage("Successully Updated!");
-                }
-                
-            }catch (Exception e) {
+                if (callable != null) callable.close();
+                if (connect != null) connect.close();
+            } catch (Exception e) {
                 e.printStackTrace();
             }
-            
-        }  
-          
-      }
-      
+        }
+    }
+}
+    
        public void appointmentDeleteBtn() {
 
         if (appointment_appointmentID.getText().isEmpty()) {
