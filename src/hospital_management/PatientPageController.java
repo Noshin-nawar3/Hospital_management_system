@@ -66,17 +66,18 @@ public class PatientPageController implements Initializable {
 
     @FXML
     void loginAccount(ActionEvent event) {
-            
-         if (login_patientID.getText().isEmpty()
+
+        if (login_patientID.getText().isEmpty()
                 || login_password.getText().isEmpty()) {
             alert.errorMessage("Incorrect Patient ID/Password");
         } else {
-             String sql = "SELECT * FROM patient WHERE patient_id = ? AND password = ? AND delete_date IS NULL";
+
+            String sql = "SELECT * FROM patient WHERE patient_id = ? AND password = ? AND date_delete IS NULL";
             connect = Database.connectDB();
-            
-             try {
-                 
-                 if (!login_showPassword.isVisible()) {
+
+            try {
+
+                if (!login_showPassword.isVisible()) {
                     if (!login_showPassword.getText().equals(login_password.getText())) {
                         login_showPassword.setText(login_password.getText());
                     }
@@ -85,44 +86,51 @@ public class PatientPageController implements Initializable {
                         login_password.setText(login_showPassword.getText());
                     }
                 }
-                 
-                 String checkStatus = "SELECT status FROM patient WHERE patient_id = '"
+
+                // CHECK IF THE STATUS OF THE DOCTOR IS CONFIRM 
+                String checkStatus = "SELECT status FROM patient WHERE patient_id = '"
                         + login_patientID.getText() + "' AND password = '"
                         + login_password.getText() + "' AND status = 'Confirm'";
 
                 prepare = connect.prepareStatement(checkStatus);
                 result = prepare.executeQuery();
 
-                
-                if (result.next()) {
-                    
-
-                    alert.errorMessage("Need the confimation of the Admin!");
+                if (!result.next()) {
+                // If status is not 'Confirm'
+                alert.errorMessage("Need the confimation of the Admin!");
                 } else {
-                     prepare = connect.prepareStatement(sql);
+                    prepare = connect.prepareStatement(sql);
                     prepare.setString(1, login_patientID.getText());
                     prepare.setString(2, login_password.getText());
 
                     result = prepare.executeQuery();
 
-                    
                     if (result.next()) {
+                        Data.patient_id = Integer.parseInt(login_patientID.getText());
+                        
                         alert.successMessage("Login Successfully!");
-                    }else{
+                        // LINK YOUR PATIENT MAIN FORM
+                        Parent root = FXMLLoader.load(getClass().getResource("PatientMainForm.fxml"));
+                        Stage stage = new Stage();
+
+                        stage.setScene(new Scene(root));
+                        stage.show();
+
+                        // TO HIDE YOUR LOGIN FORM
+                        login_loginBtn.getScene().getWindow().hide();
+                    } else {
                         alert.errorMessage("Incorrect Patient ID/Password");
                     }
                 }
-                
-                 
-             }catch (Exception e) {
+
+            } catch (Exception e) {
                 e.printStackTrace();
             }
-            
-         }
-        
-        
-        
+
+        }
+
     }
+
 
     @FXML
     void loginShowPassword(ActionEvent event) {
